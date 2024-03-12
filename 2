@@ -1,0 +1,2143 @@
+1. Разработайте код программного модуля, который определяет знак значения функции косинуса в зависимости от выбранной на форме четверти координатной плоскости. Проведите тестирование модуля MSUnix тестом.
+Листинг 1: 
+using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Ввод координат точки
+        Console.WriteLine("Введите координаты точки (x, y):");
+        double x = Convert.ToDouble(Console.ReadLine());
+        double y = Convert.ToDouble(Console.ReadLine());
+        // Определение четверти координатной плоскости
+        int quarter;
+        if (x > 0 && y > 0)
+        {
+            quarter = 1;
+        }
+        else if (x < 0 && y > 0)
+        {
+            quarter = 2;
+        }
+        else if (x < 0 && y < 0)
+        {
+            quarter = 3;
+        }
+        else if (x > 0 && y < 0)
+        {
+            quarter = 4;
+        }
+        else
+        {
+            Console.WriteLine("Точка находится на оси или в начале координат.");
+            return;
+        }
+        // Определение знака косинуса в зависимости от четверти
+        double cosValue = Math.Cos(Math.Atan2(y, x));
+        string sign;
+        if (quarter == 1 || quarter == 4)
+        {
+            sign = cosValue >= 0 ? "положительный" : "отрицательный";
+        }
+        else
+        {
+            sign = cosValue <= 0 ? "положительный" : "отрицательный";
+        }
+        Console.WriteLine($"Знак косинуса в четверти {quarter} координатной плоскости: {sign}");
+    }
+}
+
+Тесты:
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+[TestClass]
+public class CoordinateTests
+{
+    [TestMethod]
+    public void FirstQuarterTest()
+    {
+        double x = 3;
+        double y = 4;
+        string expectedSign = "положительный";
+        int expectedQuarter = 1;
+        string actualSign = GetCosineSign(x, y);
+        int actualQuarter = GetQuarter(x, y);
+        Assert.AreEqual(expectedSign, actualSign);
+        Assert.AreEqual(expectedQuarter, actualQuarter);
+    }
+    [TestMethod]
+    public void SecondQuarterTest()
+    {
+        double x = -3;
+        double y = 4;
+        string expectedSign = "отрицательный";
+        int expectedQuarter = 2;
+        string actualSign = GetCosineSign(x, y);
+        int actualQuarter = GetQuarter(x, y);
+        Assert.AreEqual(expectedSign, actualSign);
+        Assert.AreEqual(expectedQuarter, actualQuarter);
+    }
+    [TestMethod]
+    public void ThirdQuarterTest()
+    {
+        double x = -3;
+        double y = -4;
+        string expectedSign = "положительный";
+        int expectedQuarter = 3;
+        string actualSign = GetCosineSign(x, y);
+        int actualQuarter = GetQuarter(x, y);
+        Assert.AreEqual(expectedSign, actualSign);
+        Assert.AreEqual(expectedQuarter, actualQuarter);
+    }
+    [TestMethod]
+    public void FourthQuarterTest()
+    {
+        double x = 3;
+        double y = -4;
+        string expectedSign = "отрицательный";
+        int expectedQuarter = 4;
+        string actualSign = GetCosineSign(x, y);
+        int actualQuarter = GetQuarter(x, y);
+        Assert.AreEqual(expectedSign, actualSign);
+        Assert.AreEqual(expectedQuarter, actualQuarter);
+    }
+    [TestMethod]
+    public void OriginTest()
+    {
+        double x = 0;
+        double y = 0;
+        string expectedSign = null;
+        int expectedQuarter = 0;
+        string actualSign = GetCosineSign(x, y);
+        int actualQuarter = GetQuarter(x, y);
+        Assert.AreEqual(expectedSign, actualSign);
+        Assert.AreEqual(expectedQuarter, actualQuarter);
+    }
+    private int GetQuarter(double x, double y)
+    {
+        int quarter;
+        if (x > 0 && y > 0)
+        {
+            quarter = 1;
+        }
+        else if (x < 0 && y > 0)
+        {
+            quarter = 2;
+        }
+        else if (x < 0 && y < 0)
+        {
+            quarter = 3;
+        }
+        else if (x > 0 && y < 0)
+        {
+            quarter = 4;
+        }
+        else
+        {
+            quarter = 0;
+        }
+        return quarter;
+    }
+    private string GetCosineSign(double x, double y)
+    {
+        double cosValue = Math.Cos(Math.Atan2(y, x));
+        int quarter = GetQuarter(x, y);
+        string sign;
+        if (quarter == 1 || quarter == 4)
+        {
+            sign = cosValue >= 0 ? "положительный" : "отрицательный";
+        }
+        else if (quarter == 2 || quarter == 3)
+        {
+            sign = cosValue <= 0 ? "положительный" : "отрицательный";
+        }
+        else
+        {
+            sign = null;
+        }
+        return sign;
+    }
+}
+2. Разработайте код программного модуля, который среди K первых членов последовательности вида:1,1+1/2,1+1/2+1/3,... находит первый, больший заданного числа A. Проведите тестирование модуля NUnix тестом.
+Листинг 2:
+using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Введите число A:");
+        double A = Convert.ToDouble(Console.ReadLine());
+        
+        Console.WriteLine("Введите количество членов K:");
+        int K = Convert.ToInt32(Console.ReadLine());
+        double sum = 0;
+        int n;
+        for (n = 1; n <= K; n++)
+        {
+            sum += 1.0 / n;
+
+            if (sum > A)
+            {
+                break;
+            }
+        }
+        if (n > K)
+        {
+            Console.WriteLine("Среди первых {0} членов последовательности нет числа больше {1}.", K, A);
+        }
+        else
+        {
+            Console.WriteLine("Первый член последовательности, больший {0}, равен {1}.", A, sum);
+        }
+    }
+}
+Тесты: 
+using NUnit.Framework;
+using System;
+[TestFixture]
+public class ProgramTests
+{
+    [Test]
+    public void Test_SumGreaterThanA()
+    {
+        // Arrange
+        double A = 5.0;
+        int K = 10;
+        double expectedSum = 2.9289682539682538; // Sum of 1/n for n = 1 to 10
+        // Act
+        double actualSum = CalculateSum(A, K);
+        // Assert
+        Assert.AreEqual(expectedSum, actualSum);
+    }
+    [Test]
+    public void Test_SumLessThanA()
+    {
+        // Arrange
+        double A = 20.0;
+        int K = 5;
+        // Act
+        double actualSum = CalculateSum(A, K);
+        // Assert
+        Assert.LessOrEqual(actualSum, A);
+    }
+    private double CalculateSum(double A, int K)
+    {
+        double sum = 0;
+        for (int n = 1; n <= K; n++)
+        {
+            sum += 1.0 / n;
+        }
+        return sum;
+    }
+    [Test]
+    public void Test_InvalidInput()
+    {
+        // Arrange
+        double A = -5.0;
+        int K = 0;
+        // Act & Assert
+  Assert.Throws<ArgumentException>(() => CalculateSum(A, K));
+    }
+}
+3. Разработайте код программного модуля, который моделирует работу стека. Проведите тестирование модуля xUnix тестом.
+Листинг 3: 
+using System;
+class Stack
+{
+    private int[] array;
+    private int top;
+    private int capacity;
+    public Stack(int size)
+    {
+        capacity = size;
+        array = new int[capacity];
+        top = -1; // Инициализация пустого стека
+    }
+    public void Push(int item)
+    {
+        if (top == capacity - 1)
+        {
+            Console.WriteLine("Стек переполнен. Невозможно добавить элемент.");
+            return;
+        }
+        array[++top] = item;
+        Console.WriteLine("Добавлен элемент: {0}", item);
+    }
+    public int Pop()
+    {
+        if (IsEmpty())
+        {
+            Console.WriteLine("Стек пуст. Невозможно извлечь элемент.");
+            return -1;
+        }
+        int item = array[top--];
+        Console.WriteLine("Извлечен элемент: {0}", item);
+        return item;
+    }
+    public int Peek()
+    {
+        if (IsEmpty())
+        {
+            Console.WriteLine("Стек пуст.");
+            return -1;
+        }
+        return array[top];
+    }
+    public bool IsEmpty()
+    {
+        return top == -1;
+    }
+    public void PrintStack()
+    {
+        if (IsEmpty())
+        {
+            Console.WriteLine("Стек пуст.");
+            return;
+        }
+        Console.WriteLine("Элементы стека:");
+        for (int i = top; i >= 0; i--)
+        {
+            Console.WriteLine(array[i]);
+        }
+    }
+}
+class Program
+{
+    static void Main(string[] args)
+    {
+        Stack stack = new Stack(5);
+
+        stack.Push(1);
+        stack.Push(2);
+        stack.Push(3);
+        stack.Push(4);
+        stack.Push(5);
+        stack.PrintStack();
+        stack.Push(6); // Стек переполнен
+        stack.Pop();
+        stack.Pop();
+        stack.PrintStack();
+        Console.WriteLine("Верхний элемент стека: {0}", stack.Peek());
+        stack.Pop();
+        stack.Pop();
+        stack.Pop(); // Стек пуст
+        stack.PrintStack();
+    }
+}
+Тесты: 
+using Xunit;
+public class StackTests
+{
+    [Fact]
+    public void Push_AddsElementToStack()
+    {
+        Stack stack = new Stack(3);
+        stack.Push(1);
+        Assert.False(stack.IsEmpty());
+    }
+    [Fact]
+    public void Pop_RemovesElementFromStack()
+    {
+        Stack stack = new Stack(3);
+        stack.Push(1);
+        stack.Pop();
+        Assert.True(stack.IsEmpty());
+    }
+    [Fact]
+    public void Peek_ReturnsTopElement()
+    {
+        Stack stack = new Stack(3);
+        stack.Push(1);
+        stack.Push(2);
+        Assert.Equal(2, stack.Peek());
+    }
+    [Fact]
+    public void Pop_ReturnsPoppedElement()
+    {
+        Stack stack = new Stack(3);
+        stack.Push(1);
+        Assert.Equal(1, stack.Pop());
+    }
+    [Fact]
+    public void Pop_FromEmptyStack_ReturnsNegativeOne()
+    {
+        Stack stack = new Stack(3);
+        Assert.Equal(-1, stack.Pop());
+    }
+    [Fact]
+    public void Push_WhenStackIsFull_ReturnsErrorMessage()
+    {
+        Stack stack = new Stack(2);
+        stack.Push(1);
+        stack.Push(2);
+        stack.Push(3); // Attempt to push on full stack
+        Assert.True(stack.IsEmpty());
+    }
+}
+4. Разработайте код программного модуля для быстрой сортировки одномерного массива с использованием указателей и динамической памяти. Проведите тестирование модуля MSUnix тестом.
+Листинг 4:
+using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Создаем массив для сортировки
+        int[] array = { 4, 2, 7, 1, 9, 5 };
+
+        // Выводим исходный массив
+        Console.WriteLine("Исходный массив:");
+        PrintArray(array);
+        // Сортируем массив
+        Array.Sort(array);
+        // Выводим отсортированный массив
+Console.WriteLine("\nОтсортированный массив:");
+        PrintArray(array);
+    }
+    // Метод для вывода массива на консоль
+    static void PrintArray(int[] array)
+    {
+        foreach (int num in array)
+        {
+            Console.Write(num + " ");
+        }
+        Console.WriteLine();
+    }
+}
+Тесты: 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+[TestClass]
+public class ArraySortingTests
+{
+    [TestMethod]
+    public void TestArraySorting()
+    {
+        // Arrange
+        int[] array = { 4, 2, 7, 1, 9, 5 };
+        int[] expectedSortedArray = { 1, 2, 4, 5, 7, 9 };
+        // Act
+        Array.Sort(array);
+        // Assert
+     CollectionAssert.AreEqual(expectedSortedArray, array);
+    }
+    [TestMethod]
+    public void TestPrintArray()
+    {
+        // Arrange
+        int[] array = { 4, 2, 7, 1, 9, 5 };
+        string expectedOutput = "4 2 7 1 9 5 \n";
+        // Act
+        using (System.IO.StringWriter sw = new System.IO.StringWriter())
+        {
+            System.Console.SetOut(sw);
+            Program.PrintArray(array);
+            string printedArray = sw.ToString();
+            // Assert
+            Assert.AreEqual(expectedOutput, printedArray);
+        }
+    }
+    [TestMethod]
+    public void TestPrintArray_EmptyArray()
+    {
+        // Arrange
+        int[] emptyArray = new int[0];
+        string expectedOutput = "\n";
+        // Act
+        using (System.IO.StringWriter sw = new System.IO.StringWriter())
+        {
+            System.Console.SetOut(sw);
+            Program.PrintArray(emptyArray);
+            string printedArray = sw.ToString();
+            // Assert
+            Assert.AreEqual(expectedOutput, printedArray);
+        }
+    }
+    [TestMethod]
+    public void TestArraySorting_EmptyArray()
+    {
+        // Arrange
+        int[] emptyArray = new int[0];
+        // Act
+        Array.Sort(emptyArray);
+        // Assert
+        Assert.AreEqual(0, emptyArray.Length);
+    }
+}
+
+5. Разработайте код программного модуля, который сортирует одномерный массив «методом пузырька». Проведите тестирование модуля NUnix тестом.
+
+Листинг 5:
+using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Создаем массив для сортировки
+        int[] array = { 4, 2, 7, 1, 9, 5 };
+
+        // Выводим исходный массив
+        Console.WriteLine("Исходный массив:");
+        PrintArray(array);
+        // Сортируем массив методом пузырька
+        BubbleSort(array);
+        // Выводим отсортированный массив
+     Console.WriteLine("\nОтсортированный массив:");
+        PrintArray(array);
+    }
+    // Метод для сортировки массива методом пузырька
+    static void BubbleSort(int[] array)
+    {
+        int n = array.Length;
+        for (int i = 0; i < n - 1; i++)
+        {
+            for (int j = 0; j < n - i - 1; j++)
+            {
+                if (array[j] > array[j + 1])
+                {
+                    // Меняем местами элементы, если текущий больше следующего
+                    int temp = array[j];
+                    array[j] = array[j + 1];
+                    array[j + 1] = temp;
+                }
+            }
+        }
+    }
+    // Метод для вывода массива на консоль
+    static void PrintArray(int[] array)
+    {
+        foreach (int num in array)
+        {
+            Console.Write(num + " ");
+        }
+        Console.WriteLine();
+    }
+}
+
+Тесты: 
+using NUnit.Framework;
+using System;
+[TestFixture]
+public class BubbleSortTests
+{
+    [Test]
+    public void BubbleSort_SortsArrayInAscendingOrder()
+    {
+        // Arrange
+        int[] array = { 4, 2, 7, 1, 9, 5 };
+        int[] expected = { 1, 2, 4, 5, 7, 9 };
+
+        // Act
+        Program.BubbleSort(array);
+
+        // Assert
+        Assert.AreEqual(expected, array);
+    }
+
+    [Test]
+    public void PrintArray_PrintsArrayCorrectly()
+    {
+        // Arrange
+        int[] array = { 1, 2, 3, 4, 5 };
+        var expectedOutput = "1 2 3 4 5 ";
+
+        // Redirect Console output
+        using (var consoleOutput = new ConsoleOutput())
+        {
+            // Act
+            Program.PrintArray(array);
+            var printedOutput = consoleOutput.GetOuput();
+
+            // Assert
+            Assert.AreEqual(expectedOutput, printedOutput);
+        }
+    }
+    // Helper class to redirect Console output
+    public class ConsoleOutput : IDisposable
+    {
+        private readonly StringWriter stringWriter;
+        private readonly TextWriter originalOutput;
+        public ConsoleOutput()
+        {
+            stringWriter = new StringWriter();
+            originalOutput = Console.Out;
+            Console.SetOut(stringWriter);
+        }
+
+        public string GetOuput()
+        {
+            return stringWriter.ToString();
+        }
+
+        public void Dispose()
+        {
+            stringWriter.Dispose();
+            Console.SetOut(originalOutput);
+        }
+    }
+}
+
+6. Разработайте код программного модуля, который определяет вид, треугольника, заданного длинами его сторон: равносторонний, равнобедренный, прямоугольный, разносторонний. Проведите тестирование модуля xUnix тестом.
+
+Листинг 6: 
+using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Введите длины сторон треугольника:");
+        Console.Write("Сторона a: ");
+        double a;
+        if (!double.TryParse(Console.ReadLine(), out a) || a <= 0)
+        {
+            Console.WriteLine("Ошибка: введите положительное число.");
+            return;
+        }
+        Console.Write("Сторона b: ");
+        double b;
+        if (!double.TryParse(Console.ReadLine(), out b) || b <= 0)
+        {
+            Console.WriteLine("Ошибка: введите положительное число.");
+            return;
+        }
+        Console.Write("Сторона c: ");
+        double c;
+        if (!double.TryParse(Console.ReadLine(), out c) || c <= 0)
+        {
+            Console.WriteLine("Ошибка: введите положительное число.");
+            return;
+        }
+        if (a + b <= c || a + c <= b || b + c <= a)
+        {
+            Console.WriteLine("Ошибка: треугольник с такими сторонами не существует.");
+            return;
+        }
+        if (a == b && b == c)
+        {
+            Console.WriteLine("Треугольник равносторонний.");
+        }
+        else if (a == b || a == c || b == c)
+        {
+            Console.WriteLine("Треугольник равнобедренный.");
+        }
+        else if (a * a + b * b == c * c || a * a + c * c == b * b || b * b + c * c == a * a)
+        {
+            Console.WriteLine("Треугольник прямоугольный.");
+        }
+        else
+        {
+            Console.WriteLine("Треугольник разносторонний.");
+        }
+    }
+}
+
+? 
+using System;
+using System.Collections.Generic;
+using System.Text;
+namespace LR7_3
+{
+    public class TriangleClassifier
+    {
+        public static string ClassifyTriangle(double a, double b, double c)
+        {
+            if (a <= 0 || b <= 0 || c <= 0)
+            {
+                return "Ошибка: введите положительное число.";
+            }
+            if (a + b <= c || a + c <= b || b + c <= a)
+            {
+                return "Ошибка: треугольник с такими сторонами не существует.";
+            }
+            if (a == b && b == c)
+            {
+                return "Треугольник равносторонний.";
+            }
+            else if (a == b || a == c || b == c)
+            {
+                return "Треугольник равнобедренный.";
+            }
+            else if (a * a + b * b == c * c || a * a + c * c == b * b || b * b + c * c == a * a)
+            {
+                return "Треугольник прямоугольный.";
+            }
+            else
+            {
+                return "Треугольник разносторонний.";
+            }
+        }
+        public static void Main(string[] args)
+        {
+            Console.WriteLine("Введите длины сторон треугольника:");
+            Console.Write("Сторона a: ");
+            double a;
+            if (!double.TryParse(Console.ReadLine(), out a))
+            {
+                Console.WriteLine("Ошибка: введите число.");
+                return;
+            }
+            Console.Write("Сторона b: ");
+            double b;
+            if (!double.TryParse(Console.ReadLine(), out b))
+            {
+                Console.WriteLine("Ошибка: введите число.");
+                return;
+            }
+            Console.Write("Сторона c: ");
+            double c;
+            if (!double.TryParse(Console.ReadLine(), out c))
+            {
+                Console.WriteLine("Ошибка: введите число.");
+                return;
+            }
+            Console.WriteLine(ClassifyTriangle(a, b, c)); // Вывод результата только здесь
+        }
+    }
+}
+Тесты: 
+MS
+using System;
+namespace LR7_3
+{
+    public class TriangleClassifier
+    {
+        public static string ClassifyTriangle(double a, double b, double c)
+        {
+            if (a <= 0 || b <= 0 || c <= 0)
+            {
+                return "Ошибка: введите положительное число.";
+            }
+            if (a + b <= c || a + c <= b || b + c <= a)
+            {
+                return "Ошибка: треугольник с такими сторонами не существует.";
+            }
+            if (a == b && b == c)
+            {
+                return "Треугольник равносторонний.";
+            }
+            else if (a == b || a == c || b == c)
+            {
+                return "Треугольник равнобедренный.";
+            }
+            else if (a * a + b * b == c * c || a * a + c * c == b * b || b * b + c * c == a * a)
+            {
+                return "Треугольник прямоугольный.";
+            }
+            else
+            {
+                return "Треугольник разносторонний.";
+            }
+        }
+
+        public static void Main(string[] args)
+        {
+            Console.WriteLine("Введите длины сторон треугольника:");
+            Console.Write("Сторона a: ");
+            double a;
+            if (!double.TryParse(Console.ReadLine(), out a))
+            {
+                Console.WriteLine("Ошибка: введите число.");
+                return;
+            }
+            Console.Write("Сторона b: ");
+            double b;
+            if (!double.TryParse(Console.ReadLine(), out b))
+            {
+                Console.WriteLine("Ошибка: введите число.");
+                return;
+            }
+            Console.Write("Сторона c: ");
+            double c;
+            if (!double.TryParse(Console.ReadLine(), out c))
+            {
+                Console.WriteLine("Ошибка: введите число.");
+                return;
+            }
+            Console.WriteLine(ClassifyTriangle(a, b, c)); // Вывод результата только здесь
+        }
+    }
+}
+XUnit: 
+using System;
+using Xunit;
+namespace LR7_3.Tests
+{
+    public class TriangleClassifierTests
+    {
+        [Theory]
+        [InlineData(3, 3, 3, "Треугольник равносторонний.")]
+        [InlineData(3, 4, 3, "Треугольник равнобедренный.")]
+        [InlineData(3, 4, 5, "Треугольник прямоугольный.")]
+        [InlineData(4, 5, 6, "Треугольник разносторонний.")]
+        [InlineData(-1, 2, 3, "Ошибка: введите положительное число.")]
+        [InlineData(0, 2, 3, "Ошибка: введите положительное число.")]
+        [InlineData(1, 2, 3, "Ошибка: треугольник с такими сторонами не существует.")]
+        public void ClassifyTriangle_ValidInput_ReturnsCorrectClassification(double a, double b, double c, string expected)
+        {
+            // Act
+            string actual = TriangleClassifier.ClassifyTriangle(a, b, c);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+        [Theory]
+        [InlineData("a", "Ошибка: введите число.")]
+        [InlineData("1", "Ошибка: введите число.")]
+        [InlineData("1", "2", "Ошибка: введите число.")]
+        [InlineData("1", "2", "c", "Ошибка: введите число.")]
+        public void ClassifyTriangle_InvalidInput_ReturnsErrorMessage(params string[] sides)
+        {
+            // Arrange
+            double a, b, c;
+            double.TryParse(sides[0], out a);
+            double.TryParse(sides[1], out b);
+            double.TryParse(sides[2], out c);
+            // Act
+            string result = TriangleClassifier.ClassifyTriangle(a, b, c);
+            // Assert
+            Assert.StartsWith("Ошибка", result);
+        }
+    }
+}
+Тесты2: 
+using System;
+using Xunit;
+namespace LR7_3.Tests
+{
+    public class TriangleClassifierTests
+    {
+        [Fact]
+        public void ClassifyTriangle_EquilateralTriangle_ReturnsCorrectClassification()
+        {
+            // Arrange
+            double a = 3;
+            double b = 3;
+            double c = 3;
+            string expected = "Треугольник равносторонний.";
+            // Act
+            string actual = TriangleClassifier.ClassifyTriangle(a, b, c);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void ClassifyTriangle_IsoscelesTriangle_ReturnsCorrectClassification()
+        {
+            // Arrange
+            double a = 3;
+            double b = 4;
+            double c = 3;
+            string expected = "Треугольник равнобедренный.";
+            // Act
+            string actual = TriangleClassifier.ClassifyTriangle(a, b, c);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+        [Fact]
+        public void ClassifyTriangle_RightTriangle_ReturnsCorrectClassification()
+        {
+            // Arrange
+            double a = 3;
+            double b = 4;
+            double c = 5;
+            string expected = "Треугольник прямоугольный.";
+            // Act
+            string actual = TriangleClassifier.ClassifyTriangle(a, b, c);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+        [Fact]
+        public void ClassifyTriangle_ScaleneTriangle_ReturnsCorrectClassification()
+        {
+            // Arrange
+            double a = 4;
+            double b = 5;
+            double c = 6;
+            string expected = "Треугольник разносторонний.";
+            // Act
+            string actual = TriangleClassifier.ClassifyTriangle(a, b, c);
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+        [Theory]
+        [InlineData(-1, 2, 3)]
+        [InlineData(0, 2, 3)]
+        [InlineData(1, 2, 3)]
+        public void ClassifyTriangle_InvalidInput_ReturnsErrorMessage(double a, double b, double c)
+        {
+            // Act
+            string result = TriangleClassifier.ClassifyTriangle(a, b, c);
+            // Assert
+            Assert.StartsWith("Ошибка", result);
+        }
+    }
+}
+
+7. Разработайте код программного модуля, в котором обрабатываются следующие исключительные ситуации: «отрицательное значение возраста» и «год рождения больше текущего». Проведите тестирование модуля MSUnix тестом.
+
+Листинг 7: 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace CSharpCode
+{    
+    class Program
+    {        
+        static int AgeCalc(int birthYear)
+        {           
+            if (birthYear < 0)
+            {                
+                throw new ArgumentException("Ошибка: отрицательное значение года рождения!!!");
+            }            
+            int currentYear = DateTime.Now.Year;
+            if (birthYear > currentYear)            {
+                throw new ArgumentException("Ошибка: Год рождения больше текущего года!!!");            
+            }
+            return currentYear - birthYear;        
+        }
+        static void Main(string[] args)       
+        {
+            int birthYear;            
+            int age = 0;
+            do            {
+                Console.Write("Введите год рождения: ");            
+            }
+            while (!int.TryParse(Console.ReadLine(), out birthYear));
+            try            {
+                age = AgeCalc(birthYear);                
+                Console.WriteLine("По году рождения " + birthYear + " возраст " + age);
+            }            
+            catch (ArgumentException ex)
+            {                
+                Console.WriteLine(ex.Message);
+            }            
+            catch (Exception ex)
+            {                Console.WriteLine("Произошла ошибка: " + ex.Message);
+            }        
+        }
+    }
+}
+Тесты: 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using CSharpCode;
+namespace CSharpCodeTests
+{
+    [TestClass]
+    public class ProgramTests
+    {
+        [TestMethod]
+        public void TestAgeCalc_ВалидныйВвод()
+        {
+            // Утверждение
+            int birthYear = 1990;
+            int expectedAge = DateTime.Now.Year - birthYear;
+            // Действие
+            int calculatedAge = Program.AgeCalc(birthYear);
+            // Проверка
+            Assert.AreEqual(expectedAge, calculatedAge);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestAgeCalc_ОтрицательныйГод()
+        {
+            // Утверждение
+            int birthYear = -1990;
+            // Действие
+            Program.AgeCalc(birthYear);
+            // Проверка обрабатывается атрибутом ExpectedException
+        }
+        [TestMethod]
+     [ExpectedException(typeof(ArgumentException))]
+        public void TestAgeCalc_БудущийГод()
+        {
+            // Утверждение
+            int birthYear = DateTime.Now.Year + 1;
+            // Действие
+            Program.AgeCalc(birthYear);
+            // Проверка обрабатывается атрибутом ExpectedException
+        }
+        [TestMethod]
+        public void TestAgeCalc_МинимальныйГод()
+        {
+            // Утверждение
+            int birthYear = 0;
+            int expectedAge = DateTime.Now.Year;
+            // Действие
+            int calculatedAge = Program.AgeCalc(birthYear);
+            // Проверка
+            Assert.AreEqual(expectedAge, calculatedAge);
+        }
+    }
+}
+
+8. Разработайте код программного модуля, который генерирует массив вещественных чисел в диапазоне от –10 дои определяющий все минимальные положительные элементы. Проведите тестирование модуля NUnix тестом.
+
+Листинг 8:
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Создаем объект Random для генерации случайных чисел
+        Random random = new Random();
+
+        // Создаем список для хранения минимальных положительных элементов
+        List<double> minPositiveElements = new List<double>();
+
+        // Генерируем массив вещественных чисел в диапазоне от -10 до 10
+        double[] array = new double[20]; // Длина массива - 20 элементов
+        for (int i = 0; i < array.Length; i++)
+        {
+            array[i] = random.NextDouble() * 20 - 10; // Генерируем числа от -10 до 10
+        }
+
+        // Выводим исходный массив на консоль
+        Console.WriteLine("Исходный массив:");
+        PrintArray(array);
+
+        // Находим минимальные положительные элементы
+        double minPositive = double.MaxValue;
+        foreach (double num in array)
+        {
+            if (num > 0 && num < minPositive)
+            {
+                minPositive = num;
+                minPositiveElements.Clear();
+                minPositiveElements.Add(num);
+            }
+            else if (num > 0 && num == minPositive)
+            {
+                minPositiveElements.Add(num);
+            }
+        }
+
+        // Выводим минимальные положительные элементы на консоль
+        Console.WriteLine("\nМинимальные положительные элементы:");
+        foreach (double num in minPositiveElements)
+        {
+            Console.WriteLine(num);
+        }
+    }
+
+    // Метод для вывода массива на консоль
+    static void PrintArray(double[] array)
+    {
+        foreach (double num in array)
+        {
+            Console.Write(num + " ");
+        }
+        Console.WriteLine();
+    }
+}
+
+Тесты:
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+
+[TestFixture]
+public class ProgramTests
+{
+    private Program program;
+
+    [SetUp]
+    public void Setup()
+    {
+        program = new Program();
+    }
+
+    [Test]
+    public void Test_MinPositiveElements_NotNull()
+    {
+        List<double> minPositiveElements = program.GetMinPositiveElements(new double[] { 1, -2, 3, 4 });
+        Assert.IsNotNull(minPositiveElements);
+    }
+
+    [Test]
+    public void Test_MinPositiveElements_CorrectCount()
+    {
+        List<double> minPositiveElements = program.GetMinPositiveElements(new double[] { 1, -2, 3, 4 });
+        Assert.AreEqual(1, minPositiveElements.Count);
+    }
+
+    [Test]
+    public void Test_MinPositiveElements_CorrectValue()
+    {
+        List<double> minPositiveElements = program.GetMinPositiveElements(new double[] { 1, -2, 3, 4 });
+        Assert.Contains(1, minPositiveElements);
+    }
+
+    [Test]
+    public void Test_PrintArray_OutputNotNull()
+    {
+        using (System.IO.StringWriter sw = new System.IO.StringWriter())
+        {
+            Console.SetOut(sw);
+            program.PrintArray(new double[] { 1, -2, 3, 4 });
+            string expected = "1 -2 3 4 \r\n";
+            Assert.AreEqual(expected, sw.ToString());
+        }
+    }
+}
+
+9. Разработайте код программного модуля для решения квадратного уравнения ах2 + bх + с = 0. Проведите тестирование модуля xUnix тестом.
+
+Листинг 9: 
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+namespace LR7_4
+{
+    public class QuadraticEquationSolver
+    {
+        public static string Solve(double a, double b, double c)
+        {
+            if (a == 0)
+            {
+                if (b == 0)
+                {
+                    return c == 0 ? "Неразрешимое уравнение" : "Неквадратное уравнение";
+                }
+                else
+                {
+                    return SolveLinearEquation(b, c);
+                }
+            }
+            else
+            {
+                if (b == 0 && c == 0)
+                {
+                    return "Один вещественный корень: x = 0";
+                }
+                
+                double discriminant = b * b - 4 * a * c;
+                if (discriminant > 0)
+                {
+                    double root1 = (-b + Math.Sqrt(discriminant)) / (2 * a);
+                    double root2 = (-b - Math.Sqrt(discriminant)) / (2 * a);
+                    return $"Два вещественных корня: x1 = {root1}, x2 = {root2}";
+                }
+                else if (discriminant == 0)
+                {
+                    double root = -b / (2 * a);
+                    return $"Один вещественный корень: x = {root}";
+                }
+                else
+                {
+                    return "Комплексные корни";
+                }
+            }
+        }
+        private static string SolveLinearEquation(double b, double c)
+        {
+            if (b == 0)
+            {
+                return c == 0 ? "Один вещественный корень: x = 0" : "Неразрешимое уравнение";
+            }
+            else
+            {
+                double root = -c / b;
+                return $"Корень уравнения: x = {(root == 0 ? 0 : root)}";
+            }
+        }
+        public static void Main(string[] args)
+        {
+            Console.WriteLine("Введите коэффициенты a, b и c квадратного уравнения ax^2 + bx + c = 0:");
+            Console.Write("a = ");
+            double a = double.Parse(Console.ReadLine());
+            Console.Write("b = ");
+            double b = double.Parse(Console.ReadLine());
+            Console.Write("c = ");
+            double c = double.Parse(Console.ReadLine());
+            string result = Solve(a, b, c);
+            Console.WriteLine(result);
+        }
+    }
+}
+Тесты: 
+using Xunit;
+using LR7_4;
+
+namespace LR7_4.Tests
+{
+    public class QuadraticEquationSolverTests
+    {
+        [Fact]
+        public void TestQuadraticEquationTwoRealRoots()
+        {
+            // Arrange
+            double a = 1;
+            double b = -3;
+            double c = 2;
+            string expectedResult = "Два вещественных корня: x1 = 2, x2 = 1";
+
+            // Act
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+
+            // Assert
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestQuadraticEquationOneRealRoot()
+        {
+            // Arrange
+            double a = 1;
+            double b = -2;
+            double c = 1;
+            string expectedResult = "Один вещественный корень: x = 1";
+
+            // Act
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+
+            // Assert
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestQuadraticEquationComplexRoots()
+        {
+            // Arrange
+            double a = 1;
+            double b = 1;
+            double c = 1;
+            string expectedResult = "Комплексные корни";
+
+            // Act
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+
+            // Assert
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestLinearEquationZeroRoot()
+        {
+            // Arrange
+            double a = 0;
+            double b = 0;
+            double c = 5;
+            string expectedResult = "Неквадратное уравнение";
+
+            // Act
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+
+            // Assert
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestLinearEquationOneRoot()
+        {
+            // Arrange
+            double a = 0;
+            double b = 3;
+            double c = -6;
+            string expectedResult = "Корень уравнения: x = 2";
+
+            // Act
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+
+            // Assert
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestNonQuadraticEquation()
+        {
+            // Arrange
+            double a = 0;
+            double b = 0;
+            double c = 3;
+            string expectedResult = "Неквадратное уравнение";
+
+            // Act
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+
+            // Assert
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestNonQuadraticEquation2()
+        {
+            // Arrange
+            double a = 0;
+            double b = 3;
+            double c = 0;
+            string expectedResult = "Корень уравнения: x = 0";
+
+            // Act
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+
+            // Assert
+            Assert.Equal(expectedResult, result);
+        }
+    }
+}
+
+Тесты MS
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LR7_4;
+namespace LR7_4.Tests
+{
+    [TestClass]
+    public class QuadraticEquationSolverTests // Уравнение имеет два действительных корня
+    {
+        [TestMethod]
+        public void TestQuadraticEquationTwoRealRoots()
+        {
+            double a = 1;
+            double b = -3;
+            double c = 2;
+            string expectedResult = "Два вещественных корня: x1 = 2, x2 = 1";
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+            Assert.AreEqual(expectedResult, result);
+        }
+        [TestMethod]
+        public void TestQuadraticEquationOneRealRoot() // Уравнение имеет один действительный корень
+        {
+            double a = 1;
+            double b = -2;
+            double c = 1;
+            string expectedResult = "Один вещественный корень: x = 1";
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+            Assert.AreEqual(expectedResult, result);
+        }
+        [TestMethod]
+        public void TestQuadraticEquationComplexRoots() // Случай комплесных корней
+        {
+            double a = 1;
+            double b = 1;
+            double c = 1;
+            string expectedResult = "Комплексные корни";
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+            Assert.AreEqual(expectedResult, result);
+        }
+        [TestMethod]
+        public void TestLinearEquationZeroRoot() // Неквадратное уравнение
+        {
+            double a = 0;
+            double b = 0;
+            double c = 5;
+            string expectedResult = "Неквадратное уравнение";
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+            Assert.AreEqual(expectedResult, result);
+        }
+        [TestMethod]
+        public void TestLinearEquationOneRoot() // Линейное уравнение, один корень
+        {
+            double a = 0;
+            double b = 3;
+            double c = -6;
+            string expectedResult = "Корень уравнения: x = 2";
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+            Assert.AreEqual(expectedResult, result);
+        }
+        [TestMethod]
+        public void TestNonQuadraticEquation()
+        {
+            double a = 0;
+            double b = 0;
+            double c = 3;
+            string expectedResult = "Неквадратное уравнение";
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+            Assert.AreEqual(expectedResult, result);
+        }
+        [TestMethod]
+        public void TestNonQuadraticEquation2() // Линейное уравнение, корень равен нулю
+        {
+            double a = 0;
+            double b = 3;
+            double c = 0;
+            string expectedResult = "Корень уравнения: x = 0";
+            string result = QuadraticEquationSolver.Solve(a, b, c);
+            Assert.AreEqual(expectedResult, result);
+        }
+    }
+}
+
+10. Разработайте код программного модуля для определения произведения цифр трехзначного числа. Проведите тестирование модуля xUnix тестом.
+
+Листинг 10:
+using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Введите трехзначное число:");
+        int number = int.Parse(Console.ReadLine());
+
+        // Проверяем, является ли число трехзначным
+        if (number < 100 || number > 999)
+        {
+            Console.WriteLine("Введено неверное число. Пожалуйста, введите трехзначное число.");
+            return;
+        }
+
+        // Определяем цифры числа
+        int digit1 = number / 100;         // Первая цифра
+        int digit2 = (number / 10) % 10;    // Вторая цифра
+        int digit3 = number % 10;           // Третья цифра
+
+        // Вычисляем произведение цифр
+        int product = digit1 * digit2 * digit3;
+
+        Console.WriteLine("Произведение цифр трехзначного числа {0} равно {1}.", number, product);
+    }
+}
+
+Тесты:
+using NUnit.Framework;
+public class Program
+{
+    public static int CalculateProduct(int number)
+    {
+        // Проверяем, является ли число трехзначным
+        if (number < 100 || number > 999)
+        {
+            return -1; // Возвращаем отрицательное значение для обозначения ошибки
+        }
+
+        // Определяем цифры числа
+        int digit1 = number / 100;         // Первая цифра
+        int digit2 = (number / 10) % 10;    // Вторая цифра
+        int digit3 = number % 10;           // Третья цифра
+
+        // Вычисляем произведение цифр
+        int product = digit1 * digit2 * digit3;
+
+        return product;
+    }
+}
+
+[TestFixture]
+public class ProgramTests
+{
+    [Test]
+    public void Test_CalculateProduct()
+    {
+        // Arrange
+        int number = 456;
+        int expectedProduct = 120;
+
+        // Act
+        int actualProduct = Program.CalculateProduct(number);
+
+        // Assert
+        Assert.AreEqual(expectedProduct, actualProduct);
+    }
+
+    [Test]
+    public void Test_InputOutOfRange()
+    {
+        // Arrange
+        int number = 1234;
+        int expectedProduct = -1;
+
+        // Act
+        int actualProduct = Program.CalculateProduct(number);
+
+        // Assert
+        Assert.AreEqual(expectedProduct, actualProduct);
+    }
+
+    [Test]
+    public void Test_CalculateProductWithZeros()
+    {
+        // Arrange
+        int number = 100;
+        int expectedProduct = 0;
+
+        // Act
+        int actualProduct = Program.CalculateProduct(number);
+
+        // Assert
+        Assert.AreEqual(expectedProduct, actualProduct);
+    }
+
+    [Test]
+    public void Test_InputNonInteger()
+    {
+        // Arrange
+        int number = int.Parse("abc"); // Парсинг нецелочисленного значения
+
+        // Act
+        int actualProduct = Program.CalculateProduct(number);
+
+        // Assert
+        Assert.AreEqual(-1, actualProduct); // Ожидаемый результат -1, так как введено некорректное значение
+    }
+}
+
+Тесты2:
+using NUnit.Framework;
+using System;
+using System.IO;
+
+[TestFixture]
+public class ProgramTests
+{
+    [Test]
+    public void Test_InputOutOfRange()
+    {
+        // Arrange
+        var input = new StringReader("1234\n");
+        Console.SetIn(input);
+        var output = new StringWriter();
+        Console.SetOut(output);
+        string expectedOutput = "Введите трехзначное число.\r\n";
+
+        // Act
+        Program.Main(new string[0]);
+        string actualOutput = output.ToString();
+
+        // Assert
+        Assert.AreEqual(expectedOutput, actualOutput);
+    }
+
+    [Test]
+    public void Test_CalculateProduct()
+    {
+        // Arrange
+        var input = new StringReader("456\n");
+        Console.SetIn(input);
+        var output = new StringWriter();
+        Console.SetOut(output);
+        int expectedProduct = 120;
+
+        // Act
+        Program.Main(new string[0]);
+        string actualOutput = output.ToString().Trim();
+        string[] outputParts = actualOutput.Split(' ');
+        int actualProduct = int.Parse(outputParts[5].Trim('.'));
+
+        // Assert
+        Assert.AreEqual(expectedProduct, actualProduct);
+    }
+
+    [Test]
+    public void Test_ZeroProduct()
+    {
+        // Arrange
+        var input = new StringReader("100\n");
+        Console.SetIn(input);
+        var output = new StringWriter();
+        Console.SetOut(output);
+        int expectedProduct = 0;
+
+        // Act
+        Program.Main(new string[0]);
+        string actualOutput = output.ToString().Trim();
+        string[] outputParts = actualOutput.Split(' ');
+        int actualProduct = int.Parse(outputParts[5].Trim('.'));
+
+        // Assert
+        Assert.AreEqual(expectedProduct, actualProduct);
+    }
+
+    [Test]
+    public void Test_InputNonInteger()
+    {
+        // Arrange
+        var input = new StringReader("abc\n");
+        Console.SetIn(input);
+        var output = new StringWriter();
+        Console.SetOut(output);
+        string expectedOutput = "Введите трехзначное число.\r\n";
+
+        // Act
+        Program.Main(new string[0]);
+        string actualOutput = output.ToString();
+
+        // Assert
+        Assert.AreEqual(expectedOutput, actualOutput);
+    }
+
+    [Test]
+    public void Test_CalculateProductWithZeros()
+    {
+        // Arrange
+        var input = new StringReader("100\n");
+        Console.SetIn(input);
+        var output = new StringWriter();
+        Console.SetOut(output);
+        int expectedProduct = 0;
+
+        // Act
+        Program.Main(new string[0]);
+        string actualOutput = output.ToString().Trim();
+        string[] outputParts = actualOutput.Split(' ');
+        int actualProduct = int.Parse(outputParts[5].Trim('.'));
+
+        // Assert
+        Assert.AreEqual(expectedProduct, actualProduct);
+    }
+}
+
+11. Разработайте код программного модуля для определения последовательности из n действительных чисел. Найти сумму всех ее элементов. Проведите тестирование модуля xUnix тестом.
+Листинг 11: 
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Введите количество элементов в последовательности:");
+        int n;
+        while (!int.TryParse(Console.ReadLine(), out n) || n <= 0)
+        {
+            Console.WriteLine("Некорректный ввод. Пожалуйста, введите положительное целое число.");
+        }
+
+        double[] sequence = new double[n];
+
+        for (int i = 0; i < n; i++)
+        {
+            Console.WriteLine($"Введите {i + 1}-й элемент:");
+            while (!double.TryParse(Console.ReadLine(), out sequence[i]))
+            {
+                Console.WriteLine("Некорректный ввод. Пожалуйста, введите действительное число.");
+            }
+        }
+
+        double sum = 0;
+        foreach (double num in sequence)
+        {
+            sum += num;
+        }
+
+        Console.WriteLine($"Сумма элементов последовательности: {sum}");
+    }
+}
+Тесты:
+using System;
+using Xunit;
+
+public class SequenceTests
+{
+    [Fact]
+    public void TestSequenceSum()
+    {
+        // Arrange
+        double[] sequence = { 1.5, 2.5, 3.5 };
+
+        // Act
+        double sum = CalculateSequenceSum(sequence);
+
+        // Assert
+        Assert.Equal(7.5, sum);
+    }
+
+    [Theory]
+    [InlineData(new double[] { 1, 2, 3 }, 6)]
+    [InlineData(new double[] { -1, 0, 1 }, 0)]
+    [InlineData(new double[] { 0.5, 0.25, 0.25 }, 1)]
+    public void TestSequenceSumWithData(double[] sequence, double expectedSum)
+    {
+        // Act
+        double sum = CalculateSequenceSum(sequence);
+
+        // Assert
+        Assert.Equal(expectedSum, sum);
+    }
+
+    [Theory]
+    [InlineData(new string[] { "1", "2", "three" })]
+    [InlineData(new string[] { "1.5", "2.5", "3.5" })]
+    [InlineData(new string[] { "1", "2", " " })]
+    public void TestInvalidInput(params string[] inputs)
+    {
+        // Arrange
+        Console.SetIn(new System.IO.StringReader(string.Join(Environment.NewLine, inputs)));
+
+        // Act and Assert
+        Assert.Throws<FormatException>(() => Program.Main(new string[0]));
+    }
+
+    private double CalculateSequenceSum(double[] sequence)
+    {
+        double sum = 0;
+        foreach (double num in sequence)
+        {
+            sum += num;
+        }
+        return sum;
+    }
+}
+
+12. Разработайте код программного модуля для определения суммы всех элементов натурального массива N, которые не равны максимальному. Проведите тестирование модуля xUnix тестом.
+
+Листинг 12: 
+using System;
+class Program
+{
+    public static int FindMaxValue(int[] array)
+    {
+        int max = array[0];
+        foreach (int num in array)
+        {
+            if (num > max)
+            {
+                max = num;
+            }
+        }
+        return max;
+    }
+
+    public static int ComputeSumWithoutMax(int[] array)
+    {
+        int max = FindMaxValue(array);
+        int sum = 0;
+        foreach (int num in array)
+        {
+            if (num != max)
+            {
+                sum += num;
+            }
+        }
+        return sum;
+    }
+
+    static void Main(string[] args)
+    {
+        // Создаем массив
+        int[] array = { 3, 7, 2, 8, 6, 4, 9, 7 };
+
+        // Находим максимальный элемент массива
+        int max = FindMaxValue(array);
+
+        // Вычисляем сумму всех элементов, которые не равны максимальному
+        int sum = ComputeSumWithoutMax(array);
+
+        Console.WriteLine("Сумма всех элементов, не равных максимальному ({0}), равна {1}.", max, sum);
+    }
+}
+
+Тесты:
+
+using System;
+using Xunit;
+public class ProgramTests
+{
+    [Fact]
+    public void Test_MaxValueInArray()
+    {
+        // Arrange
+        int[] array = { 3, 7, 2, 8, 6, 4, 9, 7 };
+        int expectedMax = 9;
+
+        // Act
+        int max = Program.FindMaxValue(array);
+
+        // Assert
+        Assert.Equal(expectedMax, max);
+    }
+
+    [Fact]
+    public void Test_SumWithoutMaxValue()
+    {
+        // Arrange
+        int[] array = { 3, 7, 2, 8, 6, 4, 9, 7 };
+        int expectedSum = 36; // 3 + 7 + 2 + 8 + 6 + 4 + 7 = 36
+
+        // Act
+        int sum = Program.ComputeSumWithoutMax(array);
+
+        // Assert
+        Assert.Equal(expectedSum, sum);
+    }
+}
+
+13. Разработайте код программного модуля для определения количества элементов натурального массива N, больших двух своих соседей, и вывод количества таких элементов. Проведите тестирование модуля xUnix тестом.
+
+Листинг 13: 
+
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Создаем массив
+        int[] array = { 3, 7, 2, 8, 6, 4, 9, 7 };
+
+        // Переменная для хранения количества элементов, которые больше двух своих соседей
+        int count = 0;
+
+        // Проверяем каждый элемент массива, начиная с индекса 1 и заканчивая индексом Length - 2
+        for (int i = 1; i < array.Length - 1; i++)
+        {
+            if (array[i] > array[i - 1] && array[i] > array[i + 1])
+            {
+                count++;
+            }
+        }
+
+        Console.WriteLine("Количество элементов, больших двух своих соседей: " + count);
+    }
+}
+Тесты: 
+using System;
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Создаем массив
+        int[] array = { 3, 7, 2, 8, 6, 4, 9, 7 };
+
+        // Вызываем метод для подсчета количества элементов, которые больше двух своих соседей
+        int count = CountElementsGreaterThanNeighbors(array);
+
+        Console.WriteLine("Количество элементов, больших двух своих соседей: " + count);
+    }
+
+    public static int CountElementsGreaterThanNeighbors(int[] array)
+    {
+        // Переменная для хранения количества элементов, которые больше двух своих соседей
+        int count = 0;
+
+        // Проверяем каждый элемент массива, начиная с индекса 1 и заканчивая индексом Length - 2
+        for (int i = 1; i < array.Length - 1; i++)
+        {
+            if (array[i] > array[i - 1] && array[i] > array[i + 1])
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+}
+Тесты: 
+using Xunit;
+public class ProgramTests
+{
+    [Fact]
+    public void CountElementsGreaterThanNeighbors_Case1()
+    {
+        // Arrange
+        int[] array = { 3, 7, 2, 8, 6, 4, 9, 7 };
+        int expectedCount = 2;
+
+        // Act
+        int actualCount = Program.CountElementsGreaterThanNeighbors(array);
+
+        // Assert
+        Assert.Equal(expectedCount, actualCount);
+    }
+
+    [Fact]
+    public void CountElementsGreaterThanNeighbors_Case2()
+    {
+        // Arrange
+        int[] array = { 1, 2, 3, 4, 5 };
+        int expectedCount = 0;
+
+        // Act
+        int actualCount = Program.CountElementsGreaterThanNeighbors(array);
+
+        // Assert
+        Assert.Equal(expectedCount, actualCount);
+    }
+
+    [Fact]
+    public void CountElementsGreaterThanNeighbors_Case3()
+    {
+        // Arrange
+        int[] array = { 5, 4, 3, 2, 1 };
+        int expectedCount = 0;
+
+        // Act
+        int actualCount = Program.CountElementsGreaterThanNeighbors(array);
+
+        // Assert
+        Assert.Equal(expectedCount, actualCount);
+    }
+
+    [Fact]
+    public void CountElementsGreaterThanNeighbors_Case4()
+    {
+        // Arrange
+        int[] array = { 1, 5, 2, 6, 3, 7, 4, 8 };
+        int expectedCount = 4;
+
+        // Act
+        int actualCount = Program.CountElementsGreaterThanNeighbors(array);
+
+        // Assert
+        Assert.Equal(expectedCount, actualCount);
+    }
+}
+
+14. Разработайте код программного модуля для перестановки натурального числа N так, чтобы образовалось наибольшее число, записанное теми же цифрами. Проведите тестирование модуля xUnix тестом.
+Листинг 14: 
+
+using System;
+using System.Linq;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Введите натуральное число N:");
+        string numberStr = Console.ReadLine();
+
+        // Преобразуем строку в массив символов
+        char[] digits = numberStr.ToCharArray();
+
+        // Сортируем символы в порядке убывания
+        Array.Sort(digits);
+        Array.Reverse(digits);
+
+        // Объединяем отсортированные символы в одну строку
+        string resultStr = new string(digits);
+
+        // Выводим результат
+        Console.WriteLine("Наибольшее число, образованное перестановкой цифр числа {0}, равно {1}.", numberStr, resultStr);
+    }
+}
+
+Тест 1: using Xunit;
+
+namespace NumberPermutation.Tests
+{
+    public class ProgramTests
+    {
+        [Fact]
+        public void TestNumberPermutation_WithSingleDigitNumber()
+        {
+            // Arrange
+            string input = "5";
+            string expectedOutput = "5";
+
+            // Act
+            string actualOutput = Program.PermuteNumber(input);
+
+            // Assert
+            Assert.Equal(expectedOutput, actualOutput);
+        }
+
+        [Fact]
+        public void TestNumberPermutation_WithMultipleDigitNumber()
+        {
+            // Arrange
+            string input = "12345";
+            string expectedOutput = "54321";
+
+            // Act
+            string actualOutput = Program.PermuteNumber(input);
+
+            // Assert
+            Assert.Equal(expectedOutput, actualOutput);
+        }
+
+        [Fact]
+        public void TestNumberPermutation_WithRepeatedDigits()
+        {
+            // Arrange
+            string input = "12233445";
+            string expectedOutput = "5544332211";
+
+            // Act
+            string actualOutput = Program.PermuteNumber(input);
+
+            // Assert
+            Assert.Equal(expectedOutput, actualOutput);
+        }
+    }
+}
+
+Листинг 
+
+using System;
+using System.Linq;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Введите натуральное число N:");
+        string numberStr = Console.ReadLine();
+
+        string resultStr = PermuteNumber(numberStr);
+
+        Console.WriteLine("Наибольшее число, образованное перестановкой цифр числа {0}, равно {1}.", numberStr, resultStr);
+    }
+
+    public static string PermuteNumber(string numberStr)
+    {
+        char[] digits = numberStr.ToCharArray();
+        Array.Sort(digits);
+        Array.Reverse(digits);
+        return new string(digits);
+    }
+}
+Тесты:
+using Xunit;
+
+namespace NumberPermutation.Tests
+{
+    public class ProgramTests
+    {
+        [Fact]
+        public void TestNumberPermutation_WithSingleDigitNumber()
+        {
+            // Arrange
+            string input = "5";
+            string expectedOutput = "5";
+
+            // Act
+            string actualOutput = Program.PermuteNumber(input);
+
+            // Assert
+            Assert.Equal(expectedOutput, actualOutput);
+        }
+
+        [Fact]
+        public void TestNumberPermutation_WithMultipleDigitNumber()
+        {
+            // Arrange
+            string input = "12345";
+            string expectedOutput = "54321";
+
+            // Act
+            string actualOutput = Program.PermuteNumber(input);
+
+            // Assert
+            Assert.Equal(expectedOutput, actualOutput);
+        }
+
+        [Fact]
+        public void TestNumberPermutation_WithRepeatedDigits()
+        {
+            // Arrange
+            string input = "12233445";
+            string expectedOutput = "5544332211";
+
+            // Act
+            string actualOutput = Program.PermuteNumber(input);
+
+            // Assert
+            Assert.Equal(expectedOutput, actualOutput);
+        }
+    }
+}
+
+15. Разработайте код программного модуля для перестановки натурального числа N так, чтобы образовалось наименьшее число, записанное теми же цифрами. Проведите тестирование модуля xUnix тестом
+Листинг 15: 
+using System;
+using System.Linq;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Введите натуральное число N:");
+        string numberStr = Console.ReadLine();
+
+        // Преобразуем строку в массив символов
+        char[] digits = numberStr.ToCharArray();
+
+        // Сортируем символы в порядке возрастания
+        Array.Sort(digits);
+
+        // Если первой цифре соответствует 0, помещаем её на второе место
+        if (digits[0] == '0')
+        {
+            // Ищем первую ненулевую цифру
+            int i = 1;
+            while (i < digits.Length && digits[i] == '0')
+            {
+                i++;
+            }
+
+            // Меняем местами первую и найденную ненулевую цифры
+            if (i < digits.Length)
+            {
+                char temp = digits[0];
+                digits[0] = digits[i];
+                digits[i] = temp;
+            }
+        }
+
+        // Объединяем отсортированные символы в одну строку
+        string resultStr = new string(digits);
+
+        // Выводим результат
+        Console.WriteLine("Наименьшее число, образованное перестановкой цифр числа {0}, равно {1}.", numberStr, resultStr);
+    }
+}
+
+Тесты: using System;
+using Xunit;
+
+public class ProgramTests
+{
+    [Theory]
+    [InlineData("123", "123")]
+    [InlineData("54321", "12345")]
+    [InlineData("543210", "102345")]
+    [InlineData("100", "100")]
+    [InlineData("9001", "1009")]
+    [InlineData("97531", "13579")]
+    public void TestSmallestPermutation(string input, string expected)
+    {
+        // Arrange
+        var consoleOutput = new System.IO.StringWriter();
+        Console.SetOut(consoleOutput);
+        var consoleInput = new System.IO.StringReader(input);
+        Console.SetIn(consoleInput);
+
+        // Act
+        Program.Main(null);
+        var output = consoleOutput.ToString().Trim();
+
+        // Assert
+        Assert.Equal($"Наименьшее число, образованное перестановкой цифр числа {input}, равно {expected}.", output);
+    }
+
+    [Theory]
+    [InlineData("0", "0")]
+    [InlineData("10", "10")]
+    [InlineData("001", "1")]
+    [InlineData("0000001", "1")]
+    public void TestZeroStartingNumbers(string input, string expected)
+    {
+        // Arrange
+        var consoleOutput = new System.IO.StringWriter();
+        Console.SetOut(consoleOutput);
+        var consoleInput = new System.IO.StringReader(input);
+        Console.SetIn(consoleInput);
+
+        // Act
+        Program.Main(null);
+        var output = consoleOutput.ToString().Trim();
+
+        // Assert
+        Assert.Equal($"Наименьшее число, образованное перестановкой цифр числа {input}, равно {expected}.", output);
+    }
+
+    [Theory]
+    [InlineData("54321", "12345")]
+    [InlineData("321", "123")]
+    [InlineData("13579", "13579")]
+    [InlineData("9876543210", "1234567890")]
+    public void TestDescendingOrder(string input, string expected)
+    {
+        // Arrange
+        var consoleOutput = new System.IO.StringWriter();
+        Console.SetOut(consoleOutput);
+        var consoleInput = new System.IO.StringReader(input);
+        Console.SetIn(consoleInput);
+
+        // Act
+        Program.Main(null);
+        var output = consoleOutput.ToString().Trim();
+
+        // Assert
+        Assert.Equal($"Наименьшее число, образованное перестановкой цифр числа {input}, равно {expected}.", output);
+    }
+}
